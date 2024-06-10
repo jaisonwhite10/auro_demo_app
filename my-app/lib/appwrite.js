@@ -56,54 +56,53 @@ export const createUser =  async (email, password, username) => {
 
 }
 
-export const signIn = async (email, password) => {
+
+export async function signIn(email, password) {
   try {
     // Check if a session already exists
     // console.log('Listing sessions...');
 
-    // const sessions = await account.listSessions();
-    // console.log('Sessions:', sessions);
-    // if (sessions.total > 0) {
-    //   // Delete existing sessions
-    //   await Promise.all(sessions.sessions.map(session => account.deleteSession(session.$id)));
-    // }
-    // console.log(sessions)
-
-    // Create a new session
-    console.log('Creating a new session...');
-
+    const sessions = await account.listSessions();
+    console.log('Sessions:', sessions);
+    if (sessions.total > 0) {
+      // Delete existing sessions
+      await Promise.all(sessions.sessions.map(session => account.deleteSession(session.$id)));
+    }
     const session = await account.createEmailPasswordSession(email, password);
-    // console.log('New session created:', session);
+
     return session;
   } catch (error) {
-    console.error('Error signing in:', error);
-    
-    throw new Error(error.message);
+    throw new Error(error);
+  }
+}
+// Get Account
+export async function getAccount() {
+  try {
+    const currentAccount = await account.get();
+
+    return currentAccount;
+  } catch (error) {
+    throw new Error(error);
   }
 }
 
-
-export const getCurrentUser = async () => {
+// Get Current User
+export async function getCurrentUser() {
   try {
-      // console.log('Getting current account...');
-      const currentAccount = await account.get();
-      // console.log('Current account:', currentAccount);
+    const currentAccount = await getAccount();
+    if (!currentAccount) throw Error;
 
-      if (!currentAccount) throw new Error('No current account found');
+    const currentUser = await databases.listDocuments(
+      config.databaseId,
+      config.userCollectionId,
+      [Query.equal("accountId", currentAccount.$id)]
+    );
 
-      console.log('Listing user documents...');
-      const currentUser = await databases.listDocuments(
-          config.databaseId,
-          config.userCollectionId,
-          [Query.equal('accountId', currentAccount.$id)]
-      );
+    if (!currentUser) throw Error;
 
-      console.log('User documents:', currentUser);
-
-      if (!currentUser) throw new Error('No user document found');
-
-      return currentUser.documents[0];
+    return currentUser.documents[0];
   } catch (error) {
-      console.error('Error getting current user:', error);
+    console.log(error);
+    return null;
   }
 }
