@@ -7,6 +7,7 @@ import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
 import { createUser } from '../../lib/appwrite'
 import { router } from 'expo-router';
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 
 
