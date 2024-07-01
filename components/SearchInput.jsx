@@ -15,7 +15,7 @@ const [query, setQuery] = useState(initialQuery || '')
         <TextInput
           className="flex-1 text-white font-psemibold text-base text-base mt-0.5 text-white flex-1 font-pregular"
           value={query}
-          placeholder="Search for a video topic"
+          placeholder={pathname !== '/bookmark' ? "Search for a video topic" : 'Search saved posts'}
           placeholderTextColor="#CDCDE0"
           onChangeText={(e) => setQuery(e)}
          
@@ -26,8 +26,11 @@ const [query, setQuery] = useState(initialQuery || '')
             return Alert.alert('Missing query',"Please input something across database")
           }
 
-          if(pathname.startsWith('/search')) router.setParams({query})
-          else router.push(`/search/${query}`)  
+          if (pathname.startsWith('/bookmark')) {
+            router.setParams({ query });
+          } else {
+            router.push(`/search/${query}`);
+          }
         }}
        >
         <Image
