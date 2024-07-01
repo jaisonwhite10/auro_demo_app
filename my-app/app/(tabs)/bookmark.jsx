@@ -15,13 +15,8 @@ const Bookmark = () => {
 
   const {user, setUser,setIsLoggedIn} = useGlobalContext();
   const {query} = useLocalSearchParams()
-  // const {data: posts, refetch} = useAppwrite(() => searchPosts(query));
-  const {data: filteredPosts, refetch} = useAppwrite(() => getSavedPosts(user.$id));
+  const {data: filteredPosts, refetch} = useAppwrite(() => getSavedPosts(user.$id,query));
 
-
-  console.log(query)
-  console.log('filtered posts:', filteredPosts); // Debug log for getAllPosts
-  
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -38,17 +33,14 @@ const Bookmark = () => {
         )}
         ListHeaderComponent={() => (
           <View className=" flex my-6 px-4">
-            
-              
+                
                 <Text className="font-pmedium text-sm text-gray-100">
                   Saved Posts
                 </Text>
                 <Text className="text-2xl font-psemibold text-white">
                   {query}
                 </Text>
-              
-              
-             
+            
             <View className="w-full mt-6 mb-8">
               <SearchInput initialQuery={query} />
             </View>
