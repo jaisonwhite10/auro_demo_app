@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, RefreshControl } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchInput from '../../components/SearchInput';
@@ -13,11 +13,20 @@ import { useGlobalContext } from '../../context/GlobalProvider.js';
 
 const Bookmark = () => {
 
+
+
   const {user, setUser,setIsLoggedIn} = useGlobalContext();
   const {query} = useLocalSearchParams()
   const {data: filteredPosts, refetch} = useAppwrite(() => getSavedPosts(user.$id,query));
 
   const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    // Add your refresh logic here
+    await refetch();
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     refetch();
@@ -50,7 +59,8 @@ const Bookmark = () => {
         ListEmptyComponent={() => (
           <EmptyState title="No videos found" subtitle="No video found for this search query" />
         )}
-        
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+
       />
 
     </SafeAreaView>
