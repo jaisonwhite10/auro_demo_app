@@ -23,7 +23,7 @@ const Bookmark = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // Add your refresh logic here
+   
     await refetch();
     setRefreshing(false);
   };
